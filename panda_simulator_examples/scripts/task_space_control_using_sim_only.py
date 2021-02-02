@@ -43,8 +43,8 @@
 import copy
 import rospy
 import threading
-import quaternion
 import numpy as np
+import quaternion
 from geometry_msgs.msg import Point
 from visualization_msgs.msg import *
 from interactive_markers.interactive_marker_server import *
@@ -75,10 +75,10 @@ def _on_robot_state(msg):
         Callback function for updating jacobian and EE velocity from robot state
     """
     global JACOBIAN, CARTESIAN_VEL
-    JACOBIAN = np.asarray(msg.O_Jac_EE).reshape(6,7,order = 'F')
+    JACOBIAN = np.asarray(msg.O_Jac_EE).reshape(6, 7, order='F')
     CARTESIAN_VEL = {
-                'linear': np.asarray([msg.O_dP_EE[0], msg.O_dP_EE[1], msg.O_dP_EE[2]]),
-                'angular': np.asarray([msg.O_dP_EE[3], msg.O_dP_EE[4], msg.O_dP_EE[5]]) }
+        'linear': np.asarray([msg.O_dP_EE[0], msg.O_dP_EE[1], msg.O_dP_EE[2]]),
+        'angular': np.asarray([msg.O_dP_EE[3], msg.O_dP_EE[4], msg.O_dP_EE[5]])}
 
 def _on_endpoint_state(msg):
     """
@@ -86,11 +86,11 @@ def _on_endpoint_state(msg):
     """
     # pose message received is a vectorised column major transformation matrix
     global CARTESIAN_POSE
-    cart_pose_trans_mat = np.asarray(msg.O_T_EE).reshape(4,4,order='F')
+    cart_pose_trans_mat = np.asarray(msg.O_T_EE).reshape(4, 4, order='F')
 
     CARTESIAN_POSE = {
-        'position': cart_pose_trans_mat[:3,3],
-        'orientation': quaternion.from_rotation_matrix(cart_pose_trans_mat[:3,:3]) }
+        'position': cart_pose_trans_mat[:3, 3],
+        'orientation': quaternion.from_rotation_matrix(cart_pose_trans_mat[:3, :3])}
 
 def quatdiff_in_euler(quat_curr, quat_des):
     """
@@ -104,7 +104,7 @@ def quatdiff_in_euler(quat_curr, quat_des):
     vec = quaternion.as_float_array(rel_quat)[1:]
     if rel_quat.w < 0.0:
         vec = -vec
-        
+
     return -des_mat.dot(vec)
 
 def control_thread(rate):
@@ -150,8 +150,8 @@ def process_feedback(feedback):
     if feedback.event_type == InteractiveMarkerFeedback.MOUSE_UP:
         p = feedback.pose.position
         q = feedback.pose.orientation
-        goal_pos = np.array([p.x,p.y,p.z])
-        goal_ori = np.quaternion(q.w, q.x,q.y,q.z)
+        goal_pos = np.array([p.x, p.y, p.z])
+        goal_ori = np.quaternion(q.w, q.x, q.y, q.z)
 
 def _on_shutdown():
     """
@@ -190,8 +190,8 @@ if __name__ == '__main__':
     
     # create joint command message and fix its type to joint torque mode
     command_msg = JointCommand()
-    command_msg.names = ['panda_joint1','panda_joint2','panda_joint3',\
-        'panda_joint4','panda_joint5','panda_joint6','panda_joint7']
+    command_msg.names = ['panda_joint1', 'panda_joint2', 'panda_joint3',
+                         'panda_joint4', 'panda_joint5', 'panda_joint6', 'panda_joint7']
     command_msg.mode = JointCommand.TORQUE_MODE
     
     # Also create a publisher to publish joint commands
@@ -222,9 +222,9 @@ if __name__ == '__main__':
     # ------------------------------------------------------------------------------------
     server = InteractiveMarkerServer('basic_control')
 
-    position = Point( start_pos[0], start_pos[1], start_pos[2])
-    marker = destination_marker.makeMarker( False, InteractiveMarkerControl.MOVE_ROTATE_3D, \
-                                        position, quaternion.as_float_array(start_ori), True)
+    position = Point(start_pos[0], start_pos[1], start_pos[2])
+    marker = destination_marker.makeMarker(False, InteractiveMarkerControl.MOVE_ROTATE_3D,
+                                           position, quaternion.as_float_array(start_ori), True)
     server.insert(marker, process_feedback)
     
     server.applyChanges()
