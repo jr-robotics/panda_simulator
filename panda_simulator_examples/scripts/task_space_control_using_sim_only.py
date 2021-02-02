@@ -117,13 +117,13 @@ def control_thread(rate):
         error = 100.
         while error > 0.005:
             curr_pose = copy.deepcopy(CARTESIAN_POSE)
-            curr_pos, curr_ori = curr_pose['position'],curr_pose['orientation']
+            curr_pos, curr_ori = curr_pose['position'], curr_pose['orientation']
 
-            curr_vel = (CARTESIAN_VEL['linear']).reshape([3,1])
-            curr_omg = CARTESIAN_VEL['angular'].reshape([3,1])
+            curr_vel = (CARTESIAN_VEL['linear']).reshape([3, 1])
+            curr_omg = CARTESIAN_VEL['angular'].reshape([3, 1])
 
-            delta_pos = (goal_pos - curr_pos).reshape([3,1])
-            delta_ori = quatdiff_in_euler(curr_ori, goal_ori).reshape([3,1])
+            delta_pos = (goal_pos - curr_pos).reshape([3, 1])
+            delta_ori = quatdiff_in_euler(curr_ori, goal_ori).reshape([3, 1])
 
             # Desired task-space force using PD law
             F = np.vstack([P_pos*(delta_pos), P_ori*(delta_ori)]) - \
@@ -134,7 +134,7 @@ def control_thread(rate):
             J = copy.deepcopy(JACOBIAN)
 
             # joint torques to be commanded
-            tau = np.dot(J.T,F)
+            tau = np.dot(J.T, F)
 
             # publish joint commands
             command_msg.effort = tau.flatten()
@@ -143,7 +143,7 @@ def control_thread(rate):
 
 def process_feedback(feedback):
     """
-    InteractiveMarker callback function. Update target pose.
+        InteractiveMarker callback function. Update target pose.
     """
     global goal_pos, goal_ori
 
@@ -166,10 +166,10 @@ def _on_shutdown():
     cartesian_state_sub.unregister()
     joint_command_publisher.unregister()
     
-if __name__ == "__main__":
+if __name__ == '__main__':
     # global goal_pos, goal_ori, ctrl_thread
 
-    rospy.init_node("ts_control_sim_only")
+    rospy.init_node('ts_control_sim_only')
 
     # if not using franka_ros_interface, you have to subscribe to the right topics
     # to obtain the current end-effector state and robot jacobian for computing 
@@ -202,26 +202,25 @@ if __name__ == "__main__":
             queue_size=1)
 
     # wait for messages to be populated before proceeding
-    rospy.loginfo("Subscribing to robot state topics...")
+    rospy.loginfo('Subscribing to robot state topics...')
     while (True):
         if not (JACOBIAN is None or CARTESIAN_POSE is None):
             break
-    rospy.loginfo("Recieved messages; Starting Demo.")
+    rospy.loginfo('Recieved messages; Starting Demo.')
 
 
     pose = copy.deepcopy(CARTESIAN_POSE)
-    start_pos, start_ori = pose['position'],pose['orientation']
+    start_pos, start_ori = pose['position'], pose['orientation']
     goal_pos, goal_ori = start_pos, start_ori # set goal pose a starting pose in the beginning
     
-
     # start controller thread
     rospy.on_shutdown(_on_shutdown)
     rate = rospy.Rate(publish_rate)
-    ctrl_thread = threading.Thread(target=control_thread, args = [rate])
+    ctrl_thread = threading.Thread(target=control_thread, args=[rate])
     ctrl_thread.start()
 
     # ------------------------------------------------------------------------------------
-    server = InteractiveMarkerServer("basic_control")
+    server = InteractiveMarkerServer('basic_control')
 
     position = Point( start_pos[0], start_pos[1], start_pos[2])
     marker = destination_marker.makeMarker( False, InteractiveMarkerControl.MOVE_ROTATE_3D, \
