@@ -63,28 +63,20 @@ class RvizMarkers():
                 control_modes_dict[interaction_mode]
 
         if show_6dof:
-            def _create_control(orientation=Quaternion(x=0, y=0, z=0, w=0), control_name='', interaction_mode=InteractiveMarkerControl.ROTATE_AXIS, fixed=False):
+            def _create_control(x: int = 0, y: int = 0, z: int = 0, w: int = 0, control_name: str = '', interaction_mode=InteractiveMarkerControl.ROTATE_AXIS) -> InteractiveMarkerControl:
                 control = InteractiveMarkerControl()
-                control.orientation.x = orientation.x
-                control.orientation.y = orientation[1]
-                control.orientation.z = orientation[2]
-                control.orientation.w = orientation[3]
+                control.orientation.x = x
+                control.orientation.y = y
+                control.orientation.z = z
+                control.orientation.w = w
                 control.name = control_name
                 control.interaction_mode = interaction_mode
                 if fixed:
                     control.orientation_mode = InteractiveMarkerControl.FIXED
                 return control
 
-            control = InteractiveMarkerControl()
-            control.orientation.w = 1
-            control.orientation.x = 0
-            control.orientation.y = 0
-            control.orientation.z = 0
-
-            control.name = 'rotate_x'
-            control.interaction_mode = InteractiveMarkerControl.ROTATE_AXIS
-            if fixed:
-                control.orientation_mode = InteractiveMarkerControl.FIXED
+            control = _create_control(
+                x=0, y=0, z=0, w=1, control_name='rotate_x', interaction_mode=InteractiveMarkerControl.ROTATE_AXIS)
             int_marker.controls.append(control)
 
             control = InteractiveMarkerControl()
@@ -96,48 +88,16 @@ class RvizMarkers():
                 control.orientation_mode = InteractiveMarkerControl.FIXED
             int_marker.controls.append(control)
 
-            control = InteractiveMarkerControl()
-            control.orientation.w = 1
-            control.orientation.x = 0
-            control.orientation.y = 1
-            control.orientation.z = 0
-            control.name = 'rotate_z'
-            control.interaction_mode = InteractiveMarkerControl.ROTATE_AXIS
-            if fixed:
-                control.orientation_mode = InteractiveMarkerControl.FIXED
+            control = _create_control(x=0, y=1, z=0, w=1, control_name='rotate_z', interaction_mode=InteractiveMarkerControl.ROTATE_AXIS)
             int_marker.controls.append(control)
 
-            control = InteractiveMarkerControl()
-            control.orientation.w = 1
-            control.orientation.x = 0
-            control.orientation.y = 1
-            control.orientation.z = 0
-            control.name = 'move_z'
-            control.interaction_mode = InteractiveMarkerControl.MOVE_AXIS
-            if fixed:
-                control.orientation_mode = InteractiveMarkerControl.FIXED
+            control = _create_control(x=0, y=1, z=0, w=1, control_name='move_z', interaction_mode=InteractiveMarkerControl.MOVE_AXIS)
             int_marker.controls.append(control)
 
-            control = InteractiveMarkerControl()
-            control.orientation.w = 1
-            control.orientation.x = 0
-            control.orientation.y = 0
-            control.orientation.z = 1
-            control.name = 'rotate_y'
-            control.interaction_mode = InteractiveMarkerControl.ROTATE_AXIS
-            if fixed:
-                control.orientation_mode = InteractiveMarkerControl.FIXED
+            control = _create_control(x=0, y=0, z=1, w=1, control_name='rotate_y', interaction_mode=InteractiveMarkerControl.ROTATE_AXIS)
             int_marker.controls.append(control)
 
-            control = InteractiveMarkerControl()
-            control.orientation.w = 1
-            control.orientation.x = 0
-            control.orientation.y = 0
-            control.orientation.z = 1
-            control.name = 'move_y'
-            control.interaction_mode = InteractiveMarkerControl.MOVE_AXIS
-            if fixed:
-                control.orientation_mode = InteractiveMarkerControl.FIXED
+            control = _create_control(x=0, y=0, z=1, w=1, control_name='move_y', interaction_mode=InteractiveMarkerControl.MOVE_AXIS)
             int_marker.controls.append(control)
 
         return int_marker
